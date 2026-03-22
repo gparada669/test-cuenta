@@ -108,7 +108,18 @@
                         <label class="block text-sm font-medium mb-1 text-gray-600">Mes Facturado</label>
                         <select id="in-mes" required class="w-full bg-gray-50 rounded-lg p-2.5 border border-gray-200 focus:bg-white focus:ring-2 focus:ring-green-500 outline-none transition">
                             <option value="" disabled selected>Seleccione un mes</option>
-                            <option value="Enero">Enero</option><option value="Febrero">Febrero</option><option value="Marzo">Marzo</option><option value="Abril">Abril</option><option value="Mayo">Mayo</option><option value="Junio">Junio</option><option value="Julio">Julio</option><option value="Agosto">Agosto</option><option value="Septiembre">Septiembre</option><option value="Octubre">Octubre</option><option value="Noviembre">Noviembre</option><option value="Diciembre">Diciembre</option>
+                            <option value="Enero">Enero</option>
+                            <option value="Febrero">Febrero</option>
+                            <option value="Marzo">Marzo</option>
+                            <option value="Abril">Abril</option>
+                            <option value="Mayo">Mayo</option>
+                            <option value="Junio">Junio</option>
+                            <option value="Julio">Julio</option>
+                            <option value="Agosto">Agosto</option>
+                            <option value="Septiembre">Septiembre</option>
+                            <option value="Octubre">Octubre</option>
+                            <option value="Noviembre">Noviembre</option>
+                            <option value="Diciembre">Diciembre</option>
                         </select>
                     </div>
                     <div>
@@ -264,7 +275,7 @@
         </form>
     </main>
 
-    <!-- PLANTILLA PDF (Logo eliminado de aquí) -->
+    <!-- PLANTILLA PDF -->
     <div id="pdf-wrapper">
         <div id="pdf-template">
             <div class="pdf-content-wrapper">
@@ -296,7 +307,11 @@
                 <div class="mb-6">
                     <p class="font-bold mb-1">DATOS BANCARIOS:</p>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
-                        <p><span class="font-bold">Banco:</span> <span id="out-banco"></span></p><p><span class="font-bold">Tipo de cuenta:</span> <span id="out-tipo-cuenta"></span></p><p><span class="font-bold">Número de cuenta:</span> <span id="out-num-cuenta"></span></p><p><span class="font-bold">C.C. Titular:</span> <span id="out-cc-titular"></span></p><p style="grid-column: span 2;"><span class="font-bold">Titular de la cuenta:</span> <span id="out-titular"></span></p>
+                        <p><span class="font-bold">Banco:</span> <span id="out-banco"></span></p>
+                        <p><span class="font-bold">Tipo de cuenta:</span> <span id="out-tipo-cuenta"></span></p>
+                        <p><span class="font-bold">Número de cuenta:</span> <span id="out-num-cuenta"></span></p>
+                        <p><span class="font-bold">C.C. Titular:</span> <span id="out-cc-titular"></span></p>
+                        <p style="grid-column: span 2;"><span class="font-bold">Titular de la cuenta:</span> <span id="out-titular"></span></p>
                     </div>
                 </div>
                 <div class="mb-6">
@@ -307,14 +322,19 @@
                         <li>Realicé el pago correspondiente a los aportes de seguridad social del período facturado y anexo soporte de pago.</li>
                     </ul>
                 </div>
-                <div class="mb-8"><p class="font-bold mb-1">DATOS DE CONTACTO:</p><p><span class="font-bold">Celular:</span> <span id="out-celular"></span></p><p><span class="font-bold">Correo:</span> <span id="out-correo"></span></p></div>
-                <!-- AJUSTE DE POSICIÓN DE FIRMA EN PDF -->
-                <div style="position: relative;">
-                    <div style="position: absolute; bottom: 40px; left: 80px; width: 250px; height: 70px; display: flex; align-items: flex-end; justify-content: center;">
-                        <img id="out-firma-img" style="max-height: 70px; max-width: 250px; display: none; object-fit: contain;">
+                <div class="mb-8">
+                    <p class="font-bold mb-1">DATOS DE CONTACTO:</p>
+                    <p><span class="font-bold">Celular:</span> <span id="out-celular"></span></p>
+                    <p><span class="font-bold">Correo:</span> <span id="out-correo"></span></p>
+                </div>
+                
+                <!-- CORRECCIÓN DEFINITIVA DE POSICIÓN DE FIRMA -->
+                <div style="margin-top: 110px; position: relative; width: 100%;">
+                    <div style="position: absolute; top: -70px; left: 80px; width: 250px; height: 80px; display: flex; align-items: flex-end; justify-content: center; overflow: visible;">
+                        <img id="out-firma-img" style="max-height: 80px; max-width: 250px; display: none; object-fit: contain;">
                     </div>
-                    <p><span class="font-bold">FIRMA:</span> _________________________________</p>
-                    <p class="mt-2 font-bold"><span id="out-firma-nombre"></span></p>
+                    <p style="margin-bottom: 5px; position: relative; z-index: 10;"><span class="font-bold">FIRMA:</span> _________________________________</p>
+                    <p class="font-bold" style="text-transform: uppercase;"><span id="out-firma-nombre"></span></p>
                     <p>C.C.: <span id="out-firma-cc"></span></p>
                 </div>
             </div>
@@ -368,7 +388,6 @@
             firmaIsDrawn = false; uploadedFirmaDataURL = null; document.getElementById('in-firma-file').value = '';
         }
 
-        // AJUSTE: PREVISUALIZACIÓN DE IMAGEN ADJUNTA EN EL CANVAS
         document.getElementById('in-firma-file').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -464,7 +483,6 @@
                 const blob = new Blob([mergedBytes], { type: 'application/pdf' });
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(blob);
-                // AJUSTE: NOMBRE DEL ARCHIVO DINÁMICO
                 link.download = `Cuenta de Cobro ${f} ${cc} ${mes}.pdf`;
                 link.click();
 
