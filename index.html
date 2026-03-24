@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -227,7 +226,7 @@
 
                 <div class="mt-5 bg-green-50/50 p-4 rounded-lg border border-green-100 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div>
-                        <label class="block text-sm font-semibold text-green-800">Soporte De Pago y Planilla De Seguridad Social (OBLIGATORIO PDF)</label>
+                        <label class="block text-sm font-semibold text-green-800">Soporte De Pago y Planilla De Seguridad Social <span id="required-label-pdf">(OBLIGATORIO PDF)</span></label>
                         <p class="text-xs text-gray-500">Solo se aceptan archivos .pdf</p>
                     </div>
                     <input type="file" id="in-certificado-pdf" required accept="application/pdf" class="text-sm file:bg-green-600 file:text-white file:border-0 file:rounded-full file:px-4 file:py-2 cursor-pointer">
@@ -358,6 +357,21 @@
                 const target = document.getElementById('pv-' + id);
                 if(target) target.innerText = val;
             });
+
+            // Lógica de obligatoriedad según el concepto
+            const concepto = document.getElementById('in-concepto').value.trim().toLowerCase();
+            const pdfInput = document.getElementById('in-certificado-pdf');
+            const labelPdf = document.getElementById('required-label-pdf');
+            
+            if (concepto === "honorarios profesionales") {
+                pdfInput.required = true;
+                labelPdf.innerText = "(OBLIGATORIO PDF)";
+                labelPdf.classList.remove('text-gray-400');
+            } else {
+                pdfInput.required = false;
+                labelPdf.innerText = "(OPCIONAL)";
+                labelPdf.classList.add('text-gray-400');
+            }
         }
         inputsParaPreview.forEach(id => document.getElementById('in-' + id).addEventListener('input', actualizarPreview));
         
@@ -474,18 +488,18 @@
                 const { PDFDocument } = PDFLib;
                 const mergedPdf = await PDFDocument.create();
                 
-                const certFile = document.getElementById('in-certificado-pdf').files[0];
-                const certAB = await certFile.arrayBuffer();
                 const cobroAB = await pdfCobroBlob.arrayBuffer();
-
                 const docCobro = await PDFDocument.load(cobroAB);
-                const docCert = await PDFDocument.load(certAB);
-
                 const pagesCobro = await mergedPdf.copyPages(docCobro, docCobro.getPageIndices());
                 pagesCobro.forEach(p => mergedPdf.addPage(p));
 
-                const pagesCert = await mergedPdf.copyPages(docCert, docCert.getPageIndices());
-                pagesCert.forEach(p => mergedPdf.addPage(p));
+                const certFile = document.getElementById('in-certificado-pdf').files[0];
+                if (certFile) {
+                    const certAB = await certFile.arrayBuffer();
+                    const docCert = await PDFDocument.load(certAB);
+                    const pagesCert = await mergedPdf.copyPages(docCert, docCert.getPageIndices());
+                    pagesCert.forEach(p => mergedPdf.addPage(p));
+                }
 
                 const mergedBytes = await mergedPdf.save();
                 
